@@ -13,6 +13,11 @@ A GraphQL-powered, PWA, single-page application storefront for [Saleor](https://
 - Single-page application experience
 - [Braintree Payment Gateway](https://www.braintreepayments.com/) integration
 
+## Demo
+
+Launch the demo on a free Heroku instance. Note that you have to set the `BACKEND_URL` environment to point to the Saleor instance.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 ## Getting Started
 
