@@ -1,4 +1,17 @@
 version: 2
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
 jobs:
   build:
     working_directory: ~/app
@@ -19,27 +32,3 @@ jobs:
           root: ~/app
           paths:
             - dist/*
-  deploy:
-    working_directory: ~/app
-    docker:
-      - image: circleci/python:2.7-jessie
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install awscli
-          command: sudo pip install awscli
-      - run:
-          name: Deploy to S3
-          command: aws s3 sync dist s3://saleor-store-front/ --delete --acl public-read
-workflows:
-  version: 2
-  build-deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
