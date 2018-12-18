@@ -1,5 +1,5 @@
 import { Base64 } from "js-base64";
-import { PriceInterface } from "./types";
+import { OrderDirection, ProductOrderField } from "../core/types/saleor";
 
 export const slugify = (text: string | number): string =>
   text
@@ -50,6 +50,9 @@ export const generateProductUrl = (id: string, name: string) =>
 export const generateCategoryUrl = (id: string, name: string) =>
   `/category/${slugify(name)}/${getDBIdFromGraphqlId(id, "Category")}/`;
 
+export const generateCollectionUrl = (id: string, name: string) =>
+  `/collection/${slugify(name)}/${getDBIdFromGraphqlId(id, "Collection")}/`;
+
 export const generatePageUrl = (slug: string) => `/page/${slug}/`;
 
 interface AttributeDict {
@@ -83,3 +86,30 @@ export const getAttributesFromQs = (qs: QueryString) =>
 
 export const getValueOrEmpty = <T>(value: T): T | string =>
   value === undefined || value === null ? "" : value;
+
+export const convertSortByFromString = (sortBy: string) => {
+  if (!sortBy) {
+    return null;
+  }
+  const direction = sortBy.startsWith("-")
+    ? OrderDirection.DESC
+    : OrderDirection.ASC;
+
+  let field = sortBy.replace(/^-/, "");
+  field =
+    field === "name"
+      ? ProductOrderField.NAME
+      : field === "price"
+      ? ProductOrderField.PRICE
+      : undefined;
+  return { field, direction };
+};
+
+export function maybe<T>(exp: () => T, d?: T) {
+  try {
+    const result = exp();
+    return result === undefined ? d : result;
+  } catch {
+    return d;
+  }
+}

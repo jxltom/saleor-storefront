@@ -5,7 +5,7 @@ export const GET_SEARCH_PRODUCTS = gql`
     $query: String!
     $attributes: [AttributeScalar]
     $pageSize: Int
-    $sortBy: String
+    $sortBy: ProductOrder
     $after: String
   ) {
     products(
@@ -38,7 +38,7 @@ export const GET_SEARCH_PRODUCTS = gql`
         hasNextPage
       }
     }
-    attributes {
+    attributes(first: 100) {
       edges {
         node {
           id
