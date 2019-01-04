@@ -1,4 +1,4 @@
-@import "../../App/scss/variables.scss";
+@import "../../../components/App/scss/variables.scss";
 
 .product-page {
   background-color: $turquoise-light;
@@ -25,17 +25,22 @@
       position: relative;
 
       @media (max-width: $medium-screen) {
-        width: 50%;
+        width: 60%;
       }
 
       @media (max-width: $small-screen) {
         width: 100%;
       }
 
+      > div {
+        @media (min-width: $small-screen) {
+          padding-right: 1rem;
+        }
+      }
+
       &--fixed {
         position: fixed;
         width: auto;
-        padding-right: 1rem;
 
         @media (min-width: $container-width) {
           width: calc(#{$container-width} * 40 / 100);

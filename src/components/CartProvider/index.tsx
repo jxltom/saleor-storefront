@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { ApolloClient } from "apollo-client";
+import { productVariatnsQuery } from "../../views/Product/queries";
 import { GET_CHECKOUT, UPDATE_CHECKOUT_LINE } from "../CheckoutApp/queries";
-import { GET_PRODUCTS_VARIANTS } from "../ProductPage/queries";
 import { CartContext, CartInterface, CartLineInterface } from "./context";
 
 export default class CartProvider extends React.Component<
@@ -93,7 +93,7 @@ export default class CartProvider extends React.Component<
       let data: { [key: string]: any };
       let lines;
       const response = await apolloClient.query({
-        query: GET_PRODUCTS_VARIANTS,
+        query: productVariatnsQuery,
         variables: { ids: cart.map(line => line.variantId) }
       });
       const quantityMapping = cart.reduce((obj, line) => {
