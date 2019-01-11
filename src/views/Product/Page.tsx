@@ -9,9 +9,9 @@ import { CartContext } from "../../components/CartProvider/context";
 import { generateCategoryUrl, generateProductUrl } from "../../core/utils";
 import GalleryCarousel from "./GalleryCarousel";
 import OtherProducts from "./Other";
-import { ProductDetails, ProductDetails_product } from "./types/ProductDetails";
+import { ProductDetails_product } from "./types/ProductDetails";
 
-const noPhoto = require("../../images/nophoto.png");
+const noPhoto = require("../../images/no-photo.svg");
 
 class Page extends React.PureComponent<{ product: ProductDetails_product }> {
   fixedElement: React.RefObject<HTMLDivElement> = React.createRef();
@@ -118,7 +118,8 @@ class Page extends React.PureComponent<{ product: ProductDetails_product }> {
                     <div className="product-page__product__info">
                       <div
                         className={classNames({
-                          ["product-page__product__info--fixed"]: this.showCarousel
+                          ["product-page__product__info--fixed"]: this
+                            .showCarousel
                         })}
                         ref={this.fixedElement}
                       >

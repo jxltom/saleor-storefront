@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
+import { MetaWrapper } from "../../components";
 import NetworkStatus from "../../components/NetworkStatus";
 import { NotFound } from "../../components/NotFound";
 import { OfflinePlaceholder } from "../../components/OfflinePlaceholder";
@@ -44,9 +45,9 @@ export const View: React.SFC<ViewProps> = ({ match, location, history }) => {
     <NetworkStatus>
       {isOnline => (
         <TypedCollectionProductsQuery
-          variables={variables}
-          errorPolicy="all"
           loaderFull
+          errorPolicy="all"
+          variables={variables}
         >
           {({ loading, data, loadMore }) => {
             const canDisplayFilters = maybe(
@@ -69,21 +70,29 @@ export const View: React.SFC<ViewProps> = ({ match, location, history }) => {
                 );
 
               return (
-                <Page
-                  attributes={data.attributes.edges.map(edge => edge.node)}
-                  collection={data.collection}
-                  displayLoader={loading}
-                  hasNextPage={maybe(
-                    () => data.products.pageInfo.hasNextPage,
-                    false
-                  )}
-                  filters={filters}
-                  products={data.products}
-                  onAttributeFiltersChange={updateQs}
-                  onLoadMore={handleLoadMore}
-                  onOrder={value => updateQs("sortBy", value)}
-                  onPriceChange={updateQs}
-                />
+                <MetaWrapper
+                  meta={{
+                    description: data.collection.seoDescription,
+                    title: data.collection.seoTitle,
+                    type: "product.collection"
+                  }}
+                >
+                  <Page
+                    attributes={data.attributes.edges.map(edge => edge.node)}
+                    collection={data.collection}
+                    displayLoader={loading}
+                    hasNextPage={maybe(
+                      () => data.products.pageInfo.hasNextPage,
+                      false
+                    )}
+                    filters={filters}
+                    products={data.products}
+                    onAttributeFiltersChange={updateQs}
+                    onLoadMore={handleLoadMore}
+                    onOrder={value => updateQs("sortBy", value)}
+                    onPriceChange={updateQs}
+                  />
+                </MetaWrapper>
               );
             }
 

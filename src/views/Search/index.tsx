@@ -5,7 +5,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
 import {
-  Debounce,
+  DebounceChange,
   Loader,
   ProductsFeatured,
   ProductsList
@@ -72,7 +72,11 @@ export const SearchView: React.SFC<SearchViewProps> = ({
   return (
     <NetworkStatus>
       {isOnline => (
-        <TypedSearchProductsQuery variables={variables} errorPolicy="all">
+        <TypedSearchProductsQuery
+          loaderFull
+          variables={variables}
+          errorPolicy="all"
+        >
           {({ error, data, loading, loadMore }) => {
             const canDisplayFilters = maybe(
               () => !!data.attributes.edges.length
@@ -100,7 +104,7 @@ export const SearchView: React.SFC<SearchViewProps> = ({
               );
 
             return (
-              <Debounce
+              <DebounceChange
                 debounce={handleQueryChange}
                 value={querystring.q}
                 time={500}
@@ -148,7 +152,7 @@ export const SearchView: React.SFC<SearchViewProps> = ({
                     </SearchPage>
                   );
                 }}
-              </Debounce>
+              </DebounceChange>
             );
           }}
         </TypedSearchProductsQuery>
