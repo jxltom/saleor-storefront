@@ -2,6 +2,7 @@ import { ApolloClient } from "apollo-client";
 import * as React from "react";
 import { Redirect } from "react-router";
 
+import { maybe } from "../../core/utils";
 import { ButtonProps, default as Button } from "../Button";
 import { CartInterface } from "../CartProvider/context";
 import { CheckoutContext } from "../CheckoutApp/context";
@@ -108,13 +109,16 @@ export class GoToCheckout extends React.Component<
 
   getRedirection() {
     const { checkout } = this.state;
+    const shippingAvailable = maybe(
+      () => checkout.availableShippingMethods.length
+    );
     let pathname;
 
     if (checkout.billingAddress) {
       pathname = checkoutPaymentUrl(this.state.checkoutToken);
     } else if (checkout.shippingMethod) {
       pathname = checkoutBillingUrl(this.state.checkoutToken);
-    } else if (checkout.availableShippingMethods) {
+    } else if (shippingAvailable) {
       pathname = checkoutShippingOptionsUrl(this.state.checkoutToken);
     } else {
       pathname = checkoutBaseUrl(this.state.checkoutToken);
@@ -142,7 +146,11 @@ export class GoToCheckout extends React.Component<
     const { children, cart, apolloClient, ...buttonProps } = this.props;
 
     if (this.state.loading) {
-      return <Button {...buttonProps}>Loading</Button>;
+      return (
+        <Button disabled {...buttonProps}>
+          Loading
+        </Button>
+      );
     }
 
     if (this.state.checkoutToken && this.state.redirect) {

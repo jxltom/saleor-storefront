@@ -10,13 +10,14 @@ import { CachedThumbnail, DebouncedTextField } from "../../components";
 import { getCheckout_checkout } from "../../components/CheckoutApp/types/getCheckout";
 import { generateProductUrl } from "../../core/utils";
 
-const cartRemoveSvg = require("../../images/cart-remove.svg");
-const cartAddSvg = require("../../images/cart-add.svg");
-const cartSubtractSvg = require("../../images/cart-subtract.svg");
+import cartAddImg from "../../images/cart-add.svg";
+import cartRemoveImg from "../../images/cart-remove.svg";
+import cartSubtractImg from "../../images/cart-subtract.svg";
 
 const ProductsTable: React.SFC<{
   checkout: getCheckout_checkout;
   processing: boolean;
+  invalid: boolean;
   addToCart(variantId: string): void;
   changeQuantityInCart(variantId: string, quantity: number): void;
   removeFromCart(variantId: string): void;
@@ -25,11 +26,13 @@ const ProductsTable: React.SFC<{
   addToCart,
   changeQuantityInCart,
   checkout,
+  invalid,
   processing,
   removeFromCart,
   subtractToCart
 }) => {
   const { lines } = checkout;
+
   return (
     <Media query={{ minWidth: smallScreen }}>
       {isMediumScreen => (
@@ -60,48 +63,50 @@ const ProductsTable: React.SFC<{
                     })}
                   >
                     <td className="cart-page__thumbnail">
-                      {isMediumScreen && (
+                      <div>
+                        {isMediumScreen && (
+                          <Link to={productUrl}>
+                            <CachedThumbnail source={line.variant.product} />
+                          </Link>
+                        )}
                         <Link to={productUrl}>
-                          <CachedThumbnail source={line.variant.product} />
+                          {line.variant.product.name}
+                          {line.variant.name && ` (${line.variant.name})`}
                         </Link>
-                      )}
-                      <Link to={productUrl}>
-                        {line.variant.product.name}
-                        {line.variant.name && ` (${line.variant.name})`}
-                      </Link>
+                      </div>
                     </td>
                     {isMediumScreen && <td>{line.variant.price.localized}</td>}
                     <td className="cart-page__table__quantity-cell">
                       {isMediumScreen ? (
                         <div>
                           <ReactSVG
-                            path={cartAddSvg}
+                            path={cartAddImg}
                             onClick={() => addToCart(line.variant.id)}
                           />
                           <p>{line.quantity}</p>
                           <ReactSVG
-                            path={cartSubtractSvg}
+                            path={cartSubtractImg}
                             onClick={() => subtractToCart(line.variant.id)}
                           />
                         </div>
                       ) : (
                         <DebouncedTextField
-                          onChange={({ target: { value } }) =>
+                          value={line.quantity}
+                          onChange={evt =>
                             changeQuantityInCart(
                               line.variant.id,
-                              parseInt(value, 10)
+                              parseInt(evt.target.value, 10)
                             )
                           }
+                          resetValue={invalid}
                           disabled={processing}
-                          value={line.quantity}
-                          type="number"
                         />
                       )}
                     </td>
                     <td>{line.totalPrice.gross.localized}</td>
                     <td>
                       <ReactSVG
-                        path={cartRemoveSvg}
+                        path={cartRemoveImg}
                         onClick={() => removeFromCart(line.variant.id)}
                       />
                     </td>
