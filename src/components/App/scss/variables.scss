@@ -27,7 +27,7 @@ $bold-font-weight: 600;
 $extra-bold-font-weight: 800;
 
 // spacing
-$spacer: 1rem;
+$spacer: 1rem; // 16px
 
 // grid
 $container-width: 1140px;
@@ -47,7 +47,7 @@ $button-font-weight: $bold-font-weight;
 
 // input
 $label-font-size: 0.875rem; // 14px
-$label-color: $gray;
+$label-color: $gray-dark;
 $select-menu-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.15);
 
 // message

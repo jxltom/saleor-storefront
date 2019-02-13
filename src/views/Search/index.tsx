@@ -7,12 +7,12 @@ import { RouteComponentProps } from "react-router";
 import {
   DebounceChange,
   Loader,
+  OfflinePlaceholder,
   ProductsFeatured,
   ProductsList
 } from "../../components";
 import { Error } from "../../components/Error";
 import NetworkStatus from "../../components/NetworkStatus";
-import { OfflinePlaceholder } from "../../components/OfflinePlaceholder";
 import {
   AttributeList,
   Filters,
@@ -44,7 +44,7 @@ const notFound = (phrase: string) => (
   </>
 );
 
-export const SearchView: React.SFC<SearchViewProps> = ({
+export const SearchView: React.FC<SearchViewProps> = ({
   history,
   location
 }) => {

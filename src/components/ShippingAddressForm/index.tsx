@@ -8,7 +8,7 @@ import { AddressInterface } from "../../core/types";
 import { FormError } from "../Form";
 import { ShopContext } from "../ShopProvider/context";
 
-export interface AddressType extends AddressInterface {
+export interface AddressType extends Partial<AddressInterface> {
   email?: string;
 }
 
@@ -17,7 +17,7 @@ export interface FormAddressType extends Omit<AddressType, "country"> {
   country: { value?: string; code?: string };
 }
 
-const ShippingAddressForm: React.SFC<{
+const ShippingAddressForm: React.FC<{
   buttonText: string;
   billing?: boolean;
   data?: AddressType;
@@ -104,7 +104,7 @@ const ShippingAddressForm: React.SFC<{
             />
           </div>
           {!billing ? (
-            <>
+            <div>
               <TextField
                 label="Phone number"
                 type="tel"
@@ -115,9 +115,11 @@ const ShippingAddressForm: React.SFC<{
                 <input name="asBilling" type="checkbox" />
                 <span>Use as Billing Address</span>
               </label>
-            </>
+            </div>
           ) : null}
-          <Button disabled={loading}>{loading ? "Loading" : buttonText}</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Loading" : buttonText}
+          </Button>
         </Form>
       )}
     </ShopContext.Consumer>

@@ -1,15 +1,16 @@
+import "./scss/index.scss";
+
 import * as React from "react";
 
-import { Button, SelectField, TextField } from "..";
+import { SelectField, TextField } from "..";
 import {
   ProductPriceInterface,
   ProductVariantInterface
 } from "../../core/types";
-import { CartContext } from "../CartProvider/context";
+import { maybe } from "../../core/utils";
+import { CartContext, CartLine } from "../CartProvider/context";
 import { SelectValue } from "../SelectField";
-
-import AddToCartButton from "./AddToCartButton";
-import "./scss/index.scss";
+import AddToCart from "./AddToCart";
 
 interface ProductDescriptionProps {
   productVariants: ProductVariantInterface[];
@@ -32,12 +33,10 @@ class ProductDescription extends React.Component<
   ProductDescriptionProps,
   ProductDescriptionState
 > {
-  constructor(props) {
+  constructor(props: ProductDescriptionProps) {
     super(props);
     const pickers =
-      this.props.productVariants[0].attributes &&
-      this.props.productVariants[0].attributes[0] &&
-      this.props.productVariants[0].attributes[0].attribute &&
+      maybe(() => this.props.productVariants[0].attributes[0].attribute) &&
       this.createPickers();
     this.state = {
       ...pickers,
@@ -48,7 +47,7 @@ class ProductDescription extends React.Component<
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getVariant();
   }
 
@@ -143,6 +142,7 @@ class ProductDescription extends React.Component<
     const { productVariants } = this.props;
     const { primaryPicker, secondaryPicker } = this.state;
     let variant;
+
     if (!secondaryPicker && primaryPicker) {
       variant = productVariants.find(
         variant => variant.name === `${primaryPicker.selected}`
@@ -156,6 +156,7 @@ class ProductDescription extends React.Component<
     } else {
       variant = this.props.productVariants[0];
     }
+
     const variantStock = variant.stockQuantity;
     const price = variant.price;
     this.setState({ variant: variant.id, variantStock, price });
@@ -165,6 +166,17 @@ class ProductDescription extends React.Component<
     this.props.addToCart(this.state.variant, this.state.quantity);
   };
 
+  canAddToCart = (lines: CartLine[]) => {
+    const { variant, quantity, variantStock } = this.state;
+    const cartLine = lines.find(({ variantId }) => variantId === variant);
+    const syncedQuantityWithCart = cartLine
+      ? quantity + cartLine.quantity
+      : quantity;
+    return (
+      quantity !== 0 && (variant && variantStock >= syncedQuantityWithCart)
+    );
+  };
+
   render() {
     const { children, name } = this.props;
     const {
@@ -172,16 +184,15 @@ class ProductDescription extends React.Component<
       primaryPicker,
       quantity,
       secondaryPicker,
-      variant,
-      variants,
-      variantStock
+      variants
     } = this.state;
+
     return (
       <div className="product-description">
         <h3>{name}</h3>
         <h4>{price.localized}</h4>
         <div className="product-description__variant-picker">
-          {primaryPicker ? (
+          {primaryPicker && (
             <SelectField
               onChange={(e: SelectValue) => this.onPrimaryPickerChange(e.value)}
               label={primaryPicker.label}
@@ -195,8 +206,8 @@ class ProductDescription extends React.Component<
                 value
               }))}
             />
-          ) : null}
-          {secondaryPicker ? (
+          )}
+          {secondaryPicker && (
             <SelectField
               onChange={(e: SelectValue) =>
                 this.onSecondaryPickerChange(e.value)
@@ -215,7 +226,7 @@ class ProductDescription extends React.Component<
                 value
               }))}
             />
-          ) : null}
+          )}
           <TextField
             type="number"
             label="Quantity"
@@ -228,26 +239,13 @@ class ProductDescription extends React.Component<
           {children}
         </div>
         <CartContext.Consumer>
-          {({ lines }) => {
-            const calculateQuantityWithCart = () => {
-              const cartLine = lines.find(line => line.variantId === variant);
-              return cartLine ? quantity + cartLine.quantity : quantity;
-            };
-            return (
-              <AddToCartButton
-                className="product-description__action"
-                onClick={this.handleSubmit}
-                disabled={
-                  !(
-                    quantity !== 0 &&
-                    (variant && variantStock >= calculateQuantityWithCart())
-                  )
-                }
-              >
-                Add to basket
-              </AddToCartButton>
-            );
-          }}
+          {({ lines }) => (
+            <AddToCart
+              onSubmit={this.handleSubmit}
+              lines={lines}
+              disabled={!this.canAddToCart(lines)}
+            />
+          )}
         </CartContext.Consumer>
       </div>
     );

@@ -6,12 +6,17 @@ import Media from "react-media";
 import { Link } from "react-router-dom";
 import ReactSVG from "react-svg";
 
-import { MenuDropdown, OverlayContext, OverlayTheme, OverlayType } from "..";
+import {
+  MenuDropdown,
+  Offline,
+  Online,
+  OverlayContext,
+  OverlayTheme,
+  OverlayType
+} from "..";
 import { maybe } from "../../core/utils";
 import { baseUrl } from "../App/routes";
 import { CartContext } from "../CartProvider/context";
-import Offline from "../Offline";
-import Online from "../Online";
 import { UserContext } from "../User/context";
 import NavDropdown from "./NavDropdown";
 import { TypedMainMenuQuery } from "./queries";
@@ -23,7 +28,7 @@ import logoImg from "../../images/logo.svg";
 import searchImg from "../../images/search.svg";
 import userImg from "../../images/user.svg";
 
-const MainMenu: React.SFC = () => (
+const MainMenu: React.FC = () => (
   <OverlayContext.Consumer>
     {overlayContext => (
       <nav className="main-menu" id="header">
@@ -123,7 +128,6 @@ const MainMenu: React.SFC = () => (
                   <li
                     className="main-menu__icon main-menu__cart"
                     onClick={() => {
-                      cart.fetch();
                       overlayContext.show(OverlayType.cart, OverlayTheme.right);
                     }}
                   >

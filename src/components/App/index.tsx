@@ -7,22 +7,16 @@ import { Footer, MainMenu, MetaConsumer, OverlayManager } from "..";
 import CartProvider from "../CartProvider";
 import { Routes } from "./routes";
 
-const App: React.SFC<{}> = () => (
-  <ApolloConsumer>
-    {client => (
-      <>
-        <MetaConsumer />
-        <CartProvider apolloClient={client}>
-          <header>
-            <MainMenu />
-          </header>
-          <Routes />
-          <Footer />
-          <OverlayManager />
-        </CartProvider>
-      </>
-    )}
-  </ApolloConsumer>
+const App: React.FC = () => (
+  <>
+    <MetaConsumer />
+    <header>
+      <MainMenu />
+    </header>
+    <Routes />
+    <Footer />
+    <OverlayManager />
+  </>
 );
 
 export default App;

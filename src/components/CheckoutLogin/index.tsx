@@ -1,32 +1,32 @@
-import * as React from "react";
-import { ApolloConsumer } from "react-apollo";
-import { RouteComponentProps } from "react-router";
-
-import { LoginForm, PasswordResetForm } from "..";
-import { CartContext } from "../CartProvider/context";
-import { GoToCheckout } from "../GoToCheckout";
-import { UserContext } from "../User/context";
-
-import Offline from "../Offline";
-import OfflinePlaceholder from "../OfflinePlaceholder";
-import Online from "../Online";
 import "./scss/index.scss";
 
-class CheckoutLogin extends React.Component<
+import * as React from "react";
+import { Redirect, RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
+
+import {
+  Button,
+  LoginForm,
+  Offline,
+  OfflinePlaceholder,
+  Online,
+  PasswordResetForm
+} from "..";
+import { baseUrl as checkoutUrl } from "../../checkout/routes";
+import { UserContext } from "../User/context";
+
+class CheckoutLogin extends React.PureComponent<
   RouteComponentProps<{}>,
   { resetPassword: boolean }
 > {
-  checkoutButton: any;
-  constructor(props) {
-    super(props);
-    this.state = { resetPassword: false };
-  }
+  state = { resetPassword: false };
+
   render() {
     return (
       <UserContext.Consumer>
         {({ user }) => {
           if (user) {
-            this.checkoutButton.handleCheckoutCreation();
+            return <Redirect to={checkoutUrl} />;
           }
           return (
             <div className="container">
@@ -39,21 +39,9 @@ class CheckoutLogin extends React.Component<
                       don’t worry. You can finish your checkout as a guest.
                       You’ll be treated just as good as a registered user.
                     </p>
-                    <CartContext.Consumer>
-                      {cart => (
-                        <ApolloConsumer>
-                          {client => (
-                            <GoToCheckout
-                              apolloClient={client}
-                              cart={cart}
-                              ref={node => (this.checkoutButton = node)}
-                            >
-                              Continue as a guest
-                            </GoToCheckout>
-                          )}
-                        </ApolloConsumer>
-                      )}
-                    </CartContext.Consumer>
+                    <Link to={checkoutUrl}>
+                      <Button>Continue as a guest</Button>
+                    </Link>
                   </div>
                   <div className="checkout-login__user">
                     <h3 className="checkout__header">Registered user</h3>
@@ -64,9 +52,9 @@ class CheckoutLogin extends React.Component<
                         <div className="login__content__password-reminder">
                           <p>
                             <span
-                              onClick={() => {
-                                this.setState({ resetPassword: false });
-                              }}
+                              onClick={() =>
+                                this.setState({ resetPassword: false })
+                              }
                             >
                               Back to login
                             </span>
@@ -80,9 +68,9 @@ class CheckoutLogin extends React.Component<
                           <p>
                             Have you forgotten your password?&nbsp;
                             <span
-                              onClick={() => {
-                                this.setState({ resetPassword: true });
-                              }}
+                              onClick={() =>
+                                this.setState({ resetPassword: true })
+                              }
                             >
                               Click Here
                             </span>
