@@ -5,6 +5,9 @@
 // START Enums and Input Objects
 //==============================================================
 
+/**
+ * An enumeration.
+ */
 export enum GatewaysEnum {
   BRAINTREE = "BRAINTREE",
   DUMMY = "DUMMY",
@@ -15,6 +18,28 @@ export enum GatewaysEnum {
 export enum OrderDirection {
   ASC = "ASC",
   DESC = "DESC",
+}
+
+/**
+ * An enumeration.
+ */
+export enum OrderStatus {
+  CANCELED = "CANCELED",
+  DRAFT = "DRAFT",
+  FULFILLED = "FULFILLED",
+  PARTIALLY_FULFILLED = "PARTIALLY_FULFILLED",
+  UNFULFILLED = "UNFULFILLED",
+}
+
+/**
+ * An enumeration.
+ */
+export enum PaymentChargeStatusEnum {
+  FULLY_CHARGED = "FULLY_CHARGED",
+  FULLY_REFUNDED = "FULLY_REFUNDED",
+  NOT_CHARGED = "NOT_CHARGED",
+  PARTIALLY_CHARGED = "PARTIALLY_CHARGED",
+  PARTIALLY_REFUNDED = "PARTIALLY_REFUNDED",
 }
 
 export enum ProductOrderField {
@@ -38,7 +63,7 @@ export interface AddressInput {
 }
 
 export interface CheckoutCreateInput {
-  lines?: (CheckoutLineInput | null)[] | null;
+  lines: (CheckoutLineInput | null)[];
   email?: string | null;
   shippingAddress?: AddressInput | null;
   billingAddress?: AddressInput | null;
@@ -50,8 +75,7 @@ export interface CheckoutLineInput {
 }
 
 export interface PaymentInput {
-  gateway?: GatewaysEnum | null;
-  checkoutId?: string | null;
+  gateway: GatewaysEnum;
   token: string;
   amount: any;
   billingAddress?: AddressInput | null;

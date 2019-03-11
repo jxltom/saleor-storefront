@@ -7,7 +7,12 @@
 
 export interface User {
   __typename: "User";
+  /**
+   * The ID of the object.
+   */
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
   isStaff: boolean;
 }
